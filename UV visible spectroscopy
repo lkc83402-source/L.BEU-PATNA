@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>UV-VIS Spectrophotometer</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#eeeeee;
+    overflow:hidden;
+}
+
+/* TOP MOBILE/BROWSER BAR */
+.browser{
+    height:58px;
+    background:white;
+    display:flex;
+    align-items:center;
+    padding:0 14px;
+    gap:18px;
+    border-bottom:1px solid #ccc;
+}
+
+.close{
+    font-size:35px;
+}
+
+.down{
+    font-size:30px;
+}
+
+.site{
+    flex:1;
+}
+
+.site-title{
+    font-size:18px;
+    color:#222;
+}
+
+.site-name{
+    font-size:13px;
+    color:#777;
+}
+
+/* MAIN */
+.main{
+    height:calc(100vh - 58px);
+    display:flex;
+}
+
+/* LEFT PANEL */
+.left{
+    width:190px;
+    min-width:190px;
+    background:#fffde8;
+    border-right:1px solid #ccc;
+    padding:12px;
+    overflow-y:auto;
+    font-size:12px;
+    line-height:1.3;
+}
+
+.left h3{
+    color:#17679a;
+    font-size:13px;
+    font-weight:normal;
+}
+
+.left a{
+    color:#17679a;
+    text-decoration:underline;
+}
+
+.left p{
+    margin:8px 0;
+}
+
+.left ol{
+    padding-left:18px;
+}
+
+.left li{
+    margin-bottom:7px;
+}
+
+/* LAB AREA */
+.lab{
+    flex:1;
+    position:relative;
+    background:#f5f5f5;
+    overflow:auto;
+    min-width:650px;
+}
+
+/* TOP SMALL AREA */
+.top-icons{
+    height:135px;
+    display:flex;
+    align-items:center;
+    padding-left:35px;
+    gap:35px;
+}
+
+.waste{
+    width:65px;
+    height:70px;
+    border:2px solid #777;
+    background:#eee;
+    position:relative;
+    text-align:center;
+    padding-top:30px;
+    font-size:10px;
+}
+
+.waste:before{
+    content:"⚠";
+    position:absolute;
+    top:5px;
+    left:23px;
+    font-size:22px;
+    color:#111;
+}
+
+.arrows{
+    font-size:45px;
+    color:#25b52b;
+}
+
+/* PIPETTE */
+.pipette{
+    width:30px;
+    height:125px;
+    position:relative;
+    cursor:pointer;
+}
+
+.pipette-head{
+    width:20px;
+    height:35px;
+    border:2px solid #777;
+    border-radius:10px;
+    margin:auto;
+    background:white;
+}
+
+.pipette-body{
+    width:12px;
+    height:70px;
+    border:2px solid #888;
+    margin:auto;
+    background:#fdfdfd;
+}
+
+.pipette-tip{
+    width:5px;
+    height:35px;
+    background:#aaa;
+    margin:auto;
+}
+
+.pipette-liquid{
+    position:absolute;
+    width:8px;
+    height:0;
+    background:#65bde8;
+    bottom:35px;
+    left:11px;
+}
+
+/* CUVETTES */
+.cuvette-selector{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    height:100px;
+}
+
+.cuvette{
+    width:40px;
+    height:70px;
+    border:2px solid #aaa;
+    border-radius:3px 3px 8px 8px;
+    background:linear-gradient(
+        90deg,
+        #eef5f8,
+        #cce4ec,
+        #f5fbfd
+    );
+    position:relative;
+    cursor:pointer;
+}
+
+.cuvette:before{
+    content:"";
+    position:absolute;
+    width:38px;
+    height:7px;
+    left:-1px;
+    top:-8px;
+    border:2px solid #aaa;
+    background:#eee;
+}
+
+.cuvette.selected{
+    outline:3px solid #2989d8;
+}
+
+.liquid{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:0;
+    background:#65c4ed;
+    opacity:.7;
+    transition:.5s;
+}
+
+.number{
+    text-align:center;
+    margin-top:76px;
+    font-size:12px;
+}
+
+.selector{
+    width:160px;
+    height:22px;
+    border:2px solid #555;
+    border-radius:12px;
+    margin:5px auto;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+}
+
+.radio{
+    width:11px;
+    height:11px;
+    border:1px solid #777;
+    border-radius:50%;
+    background:white;
+}
+
+.radio.active{
+    background:#2379d0;
+}
+
+/* REAGENT TROLLEY */
+.trolley{
+    position:absolute;
+    left:25px;
+    top:300px;
+    width:210px;
+    height:340px;
+}
+
+.shelf{
+    height:7px;
+    background:#9a6935;
+    border-radius:5px;
+    margin-top:75px;
+}
+
+.bottle{
+    position:absolute;
+    width:70px;
+    height:75px;
+    background:#eee;
+    border:2px solid #aaa;
+    border-radius:5px;
+    cursor:pointer;
+    text-align:center;
+    font-size:11px;
+    padding-top:35px;
+    box-shadow:0 2px 3px #aaa;
+}
+
+.bottle:hover{
+    transform:scale(1.05);
+}
+
+.cap{
+    position:absolute;
+    top:-7px;
+    left:15px;
+    width:40px;
+    height:9px;
+    background:#d71920;
+    border-radius:3px;
+}
+
+.b1{left:0;top:10px}
+.b2{left:82px;top:10px}
+.b3{left:0;top:92px}
+.b4{left:82px;top:92px}
+.b5{left:0;top:174px}
+.b6{left:82px;top:174px}
+
+.color{
+    position:absolute;
+    left:3px;
+    right:3px;
+    bottom:3px;
+    height:28px;
+    border-radius:2px;
+}
+
+.blue{background:#9bdcf3}
+.yellow{background:#f5e95e}
+.red{background:#e75a5a}
+.purple{background:#6953a7}
+.white{background:#f7f7f7}
+
+/* MACHINE */
+.machine{
+    position:absolute;
+    right:35px;
+    top:40px;
+    width:450px;
+    height:270px;
+    background:linear-gradient(
+        140deg,
+        #fafafa,
+        #d8d8d8
+    );
+    border:2px solid #aaa;
+    border-radius:30px 30px 45px 45px;
+    box-shadow:0 8px 12px #aaa;
+}
+
+/* machine lid */
+.machine-lid{
+    position:absolute;
+    left:30px;
+    top:25px;
+    width:210px;
+    height:105px;
+    background:#f4f4f4;
+    border:2px solid #aaa;
+    border-radius:5px;
+}
+
+/* display */
+.machine-display{
+    position:absolute;
+    right:20px;
+    top:25px;
+    width:180px;
+    height:100px;
+    background:#181818;
+    color:#e9e9e9;
+    padding:12px;
+    font-family:monospace;
+    font-size:14px;
+}
+
+.machine-display .bluebox{
+    background:#9ac6e7;
+    color:#111;
+    padding:4px;
+    text-align:center;
+    margin-bottom:8px;
+}
+
+.power{
+    position:absolute;
+    left:15px;
+    bottom:20px;
+    width:32px;
+    height:32px;
+    background:#a50000;
+    color:white;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+}
+
+.model{
+    position:absolute;
+    right:155px;
+    bottom:8px;
+    font-size:12px;
+    color:#666;
+}
+
+/* SCREEN */
+.screen{
+    position:absolute;
+    left:250px;
+    right:25px;
+    top:340px;
+    height:330px;
+    background:#777;
+    border:15px solid #777;
+    box-shadow:0 2px 5px #999;
+}
+
+.screen-inner{
+    width:100%;
+    height:100%;
+    background:#777;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#eee;
+    font-size:18px;
+}
+
+/* SCREEN CONTROLS */
+.screen-buttons{
+    position:absolute;
+    right:25px;
+    top:680px;
+    display:flex;
+    gap:10px;
+}
+
+button{
+    border:0;
+    padding:9px 15px;
+    background:#247bc1;
+    color:white;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#155d94;
+}
+
+input{
+    width:75px;
+    padding:7px;
+}
+
+/* STATUS */
+.status{
+    position:absolute;
+    left:250px;
+    bottom:15px;
+    background:white;
+    padding:8px 14px;
+    border-radius:5px;
+    border:1px solid #ccc;
+    font-size:12px;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+
+    .left{
+        width:155px;
+        min-width:155px;
+    }
+
+    .machine{
+        transform:scale(.8);
+        transform-origin:top right;
+    }
+
+    .screen{
+        left:210px;
+    }
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- BROWSER BAR -->
+<div class="browser">
+
+<div class="close">×</div>
+<div class="down">⌄</div>
+
+<div class="site">
+<div class="site-title">UV-VIS spectr...</div>
+<div class="site-name">biomodel.uah.es</div>
+</div>
+
+<div style="font-size:28px">⌯</div>
+<div style="font-size:27px">♡</div>
+<div style="font-size:27px">⋮</div>
+
+</div>
+
+
+<div class="main">
+
+
+<!-- LEFT INSTRUCTIONS -->
+<div class="left">
+
+<h3>
+To start an experiment,
+click on one of the tabs
+in the top row and then
+one of the tabs that will
+be shown in the second row.
+</h3>
+
+<p>
+<a>What are Pasteur pipettes
+and how to use them?</a>
+</p>
+
+<p>
+When you click on one of
+the reagent bottles the cap
+will open; from that moment
+on the pipette will draw
+from that reagent.
+</p>
+
+<p>
+When you click again on the
+bottle or its pipette, it will
+be capped.
+</p>
+
+<p>
+<b>Trick:</b> while a bottle
+remains open, it is enough
+to hover over the pipette
+to have this filled up.
+</p>
+
+<hr>
+
+<b>To add an aliquot of a
+sample to a cuvette:</b>
+
+<ol>
+<li>Select a cuvette.</li>
+<li>Click on the pipette.</li>
+</ol>
+
+<p>
+<b>Trick:</b> you may empty
+the pipette if you erroneously
+draw some liquid by right
+clicking on it.
+</p>
+
+<hr>
+
+<b>To empty a cuvette</b>,
+select it and click on the
+waste container.
+
+<hr>
+
+<b>To switch the spectrophotometer
+on and off</b>, click on the
+power switch.
+
+<hr>
+
+<b>To access the cuvette
+compartment</b>, click on
+the latch or on the cover.
+</div>
+
+
+<!-- LAB -->
+<div class="lab">
+
+
+<!-- TOP -->
+<div class="top-icons">
+
+<div class="pipette" onclick="pipetteClick()">
+<div class="pipette-head"></div>
+<div class="pipette-body"></div>
+<div class="pipette-tip"></div>
+<div id="pLiquid" class="pipette-liquid"></div>
+</div>
+
+<div class="waste">
+Chemical<br>Waste
+</div>
+
+<div class="arrows">↔</div>
+
+</div>
+
+
+<!-- CUVETTES -->
+<div class="cuvette-selector">
+
+<div>
+<div id="c1" class="cuvette"
+onclick="selectCuvette(1)">
+<div id="l1" class="liquid"></div>
+</div>
+<div class="number">1</div>
+</div>
+
+<div>
+<div id="c2" class="cuvette"
+onclick="selectCuvette(2)">
+<div id="l2" class="liquid"></div>
+</div>
+<div class="number">2</div>
+</div>
+
+<div>
+<div id="c3" class="cuvette"
+onclick="selectCuvette(3)">
+<div id="l3" class="liquid"></div>
+</div>
+<div class="number">3</div>
+</div>
+
+</div>
+
+<div class="selector">
+<div id="r1" class="radio active"></div>
+<div id="r2" class="radio"></div>
+<div id="r3" class="radio"></div>
+</div>
+
+
+<!-- REAGENT TROLLEY -->
+<div class="trolley">
+
+<div class="bottle b1"
+onclick="selectReagent('H₂O')">
+<div class="cap"></div>
+H₂O
+<div class="color blue"></div>
+</div>
+
+<div class="bottle b2"
+onclick="selectReagent('pNF pH=10')">
+<div class="cap"></div>
+pNF<br>pH=10
+<div class="color yellow"></div>
+</div>
+
+<div class="shelf"></div>
+
+<div class="bottle b3"
+onclick="selectReagent('NADH')">
+<div class="cap"></div>
+NADH
+<div class="color white"></div>
+</div>
+
+<div class="bottle b4"
+onclick="selectReagent('Haemoglobin')">
+<div class="cap"></div>
+Haemoglobin
+<div class="color red"></div>
+</div>
+
+<div class="shelf"></div>
+
+<div class="bottle b5"
+onclick="selectReagent('Bradford reagent')">
+<div class="cap"></div>
+Bradford
+<div class="color purple"></div>
+</div>
+
+<div class="bottle b6"
+onclick="selectReagent('Bradford')">
+<div class="cap"></div>
+protein-
+Bradford
+<div class="color purple"></div>
+</div>
+
+</div>
+
+
+<!-- MACHINE -->
+<div class="machine">
+
+<div class="machine-lid"></div>
+
+<div class="machine-display">
+
+<div class="bluebox">
+λ = <span id="lambda">540</span> nm
+</div>
+
+<div>
+A = <span id="abs">0.000</span>
+</div>
+
+<div>
+Status: <span id="powerText">OFF</span>
+</div>
+
+</div>
+
+<div class="power"
+onclick="power()">
+⏻
+</div>
+
+<div class="model">
+UVIScan™ 100
+</div>
+
+</div>
+
+
+<!-- SCREEN -->
+<div class="screen">
+
+<div id="screenText"
+class="screen-inner">
+UV-VIS Spectrophotometer<br>
+Select a reagent to begin
+</div>
+
+</div>
+
+
+<!-- CONTROLS -->
+<div class="screen-buttons">
+
+<label>
+λ
+<input
+id="wave"
+type="number"
+value="540"
+min="190"
+max="800">
+nm
+</label>
+
+<button onclick="blank()">
+A = 0
+</button>
+
+<button onclick="measure()">
+Measure
+</button>
+
+<button onclick="clearAll()">
+Clear
+</button>
+
+</div>
+
+
+<div id="status" class="status">
+Select a reagent bottle.
+</div>
+
+
+</div>
+</div>
+
+
+<script>
+
+let reagent=null;
+let cuvette=null;
+let pipette=false;
+let powerOn=false;
+let blankValue=0;
+
+
+/* REAGENT */
+
+function selectReagent(name){
+
+    reagent=name;
+
+    document.getElementById("status").innerText =
+        name + " selected. Click pipette.";
+
+    document.getElementById("screenText").innerHTML =
+        "Reagent selected:<br>" + name;
+}
+
+
+/* CUVETTE */
+
+function selectCuvette(n){
+
+    cuvette=n;
+
+    document.querySelectorAll(".cuvette")
+    .forEach(x=>x.classList.remove("selected"));
+
+    document.getElementById("c"+n)
+    .classList.add("selected");
+
+    document.querySelectorAll(".radio")
+    .forEach(x=>x.classList.remove("active"));
+
+    document.getElementById("r"+n)
+    .classList.add("active");
+
+    document.getElementById("status").innerText =
+        "Cuvette "+n+" selected.";
+
+}
+
+
+/* PIPETTE */
+
+function pipetteClick(){
+
+    if(!reagent){
+
+        document.getElementById("status").innerText =
+            "First select a reagent bottle.";
+
+        return;
+    }
+
+    if(!pipette){
+
+        pipette=true;
+
+        document.getElementById("pLiquid")
+        .style.height="65px";
+
+        document.getElementById("status").innerText =
+            reagent+" taken into pipette. Select cuvette.";
+
+    }
+
+    else{
+
+        if(!cuvette){
+
+            document.getElementById("status").innerText =
+                "Select a cuvette first.";
+
+            return;
+        }
+
+        pipette=false;
+
+        document.getElementById("pLiquid")
+        .style.height="0";
+
+        document.getElementById("l"+cuvette)
+        .style.height="55%";
+
+        document.getElementById("status").innerText =
+            reagent+" added to cuvette "+cuvette;
+
+    }
+}
+
+
+/* POWER */
+
+function power(){
+
+    powerOn=!powerOn;
+
+    document.getElementById("powerText")
+    .innerText=powerOn ? "READY":"OFF";
+
+    document.getElementById("status").innerText =
+        powerOn ?
+        "Spectrophotometer switched ON." :
+        "Spectrophotometer switched OFF.";
+}
+
+
+/* BLANK */
+
+function blank(){
+
+    if(!powerOn){
+
+        document.getElementById("status").innerText =
+            "Switch the spectrophotometer ON first.";
+
+        return;
+    }
+
+    blankValue=0;
+
+    document.getElementById("abs")
+    .innerText="0.000";
+
+    document.getElementById("screenText").innerHTML =
+        "Blanking completed<br>A = 0.000";
+
+    document.getElementById("status").innerText =
+        "Blank completed.";
+
+}
+
+
+/* MEASURE */
+
+function measure(){
+
+    if(!powerOn){
+
+        document.getElementById("status").innerText =
+            "Switch ON the spectrophotometer.";
+
+        return;
+    }
+
+    if(!cuvette){
+
+        document.getElementById("status").innerText =
+            "Select a cuvette.";
+
+        return;
+    }
+
+    let wavelength =
+        Number(document.getElementById("wave").value);
+
+    document.getElementById("lambda")
+    .innerText=wavelength;
+
+
+    let peak=540;
+    let strength=.8;
+
+
+    if(reagent==="H₂O"){
+        peak=700;
+        strength=.02;
+    }
+
+    if(reagent==="pNF pH=10"){
+        peak=405;
+        strength=1.1;
+    }
+
+    if(reagent==="NADH"){
+        peak=340;
+        strength=1.2;
+    }
+
+    if(reagent==="Haemoglobin"){
+        peak=540;
+        strength=1.4;
+    }
+
+    if(reagent==="Bradford reagent"){
+        peak=595;
+        strength=1.2;
+    }
+
+
+    let d=wavelength-peak;
+
+    let A=
+        strength*
+        Math.exp(
+            -(d*d)/(2*45*45)
+        );
+
+
+    A=Math.max(0,A-blankValue);
+
+
+    document.getElementById("abs")
+    .innerText=A.toFixed(3);
+
+
+    document.getElementById("screenText").innerHTML =
+        "Measurement Result<br><br>"+
+        "Wavelength: "+wavelength+" nm<br>"+
+        "Absorbance: "+A.toFixed(3);
+
+
+    document.getElementById("status").innerText =
+        "Measurement completed.";
+
+}
+
+
+/* CLEAR */
+
+function clearAll(){
+
+    reagent=null;
+    cuvette=null;
+    pipette=false;
+
+    document.querySelectorAll(".cuvette")
+    .forEach(x=>x.classList.remove("selected"));
+
+    document.querySelectorAll(".liquid")
+    .forEach(x=>x.style.height="0");
+
+    document.getElementById("pLiquid")
+    .style.height="0";
+
+    document.getElementById("abs")
+    .innerText="0.000";
+
+    document.getElementById("status")
+    .innerText="Select a reagent bottle.";
+
+    document.getElementById("screenText").innerHTML =
+        "UV-VIS Spectrophotometer<br>"+
+        "Select a reagent to begin";
+}
+
+
+/* WAVELENGTH */
+
+document.getElementById("wave")
+.addEventListener("input",function(){
+
+    document.getElementById("lambda")
+    .innerText=this.value;
+
+});
+
+</script>
+
+</body>
+</html>
